@@ -123,7 +123,7 @@ export default class Database {
 	  }
 	}
 
-	async allProgramItems(name){
+	async allProgramItems(name, linksForOutput = false){
 		const {status, data: program} = await this.find('program_by_name', name)
 		if(!program.hasOwnProperty('data')) return this.result("error", { description: 'Program not found', status: 404 })
 		let refIdInteger = parseInt(program.refId)
@@ -141,7 +141,10 @@ export default class Database {
 	        )
 	      )
 	    )
-			return this.result("success", response)
+			return this.result("success", linksForOutput ? response.map(item => {
+				let programTrackingId = program.data.trackingId
+				return Object.assign(item, {data: {...item.data, programTrackingId}})
+			}) : response)
 	  } catch (error) {
 			return this.result("error", this.faunaError(error))
 	  }
