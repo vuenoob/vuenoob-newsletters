@@ -44,7 +44,7 @@ export function rankItemsByQueries(items, queries) {
   items.map(item => item.data).forEach(item => {
     let score = 0;
     queries.forEach(query => {
-      score += item.title.toLowerCase().includes(query) ? 1 : 0;
+      score += item.title.toLowerCase().includes(query) ? (query.includes('javascript') ? 0.5 : 1) : 0;
     })
     rank.push({score, item})
   })

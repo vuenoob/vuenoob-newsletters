@@ -69,14 +69,14 @@ router.get("/get-all-programs", async () => {
   Fetches specified program links
 */
 router.get("/get-affiliate-links", async ({ query }) => {
-  let { program, queries, count } = query
+  let { program, queries, count, output } = query
 
   if(!program || !queries) return rawJsonResponse({status: 'error', message: 'Missing inputs'})
 
   let queryArray = queries.split(',');
 
   // get all program items
-  let {status, data} = await db.allProgramItems(program)
+  let {status, data} = await db.allProgramItems(program, !!output)
 
   if(status !== "success") return rawJsonResponse({status, message: data.description})
 
