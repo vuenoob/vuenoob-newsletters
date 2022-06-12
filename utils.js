@@ -33,21 +33,3 @@ export async function readRequestBody(request) {
     return null;
   }
 }
-
-/** ranks items per the queries provided
- * @param {Array} items
- * @param {Array} queries
- * @returns {Array}
- */
-export function rankItemsByQueries(items, queries) {
-  let rank = [];
-  items.map(item => item.data).forEach(item => {
-    let score = 0;
-    queries.forEach(query => {
-      score += item.title.toLowerCase().includes(query) ? (query.includes('javascript') ? 0.5 : 1) : 0;
-    })
-    rank.push({score, item})
-  })
-  let ranked = rank.sort((a, b) => b.score - a.score)
-  return ranked.map(item => item.item)
-}
