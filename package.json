@@ -1,8 +1,8 @@
 {
-    "name": "affman-backend",
+    "name": "vuenoob-newsletters",
     "private": true,
     "version": "1.0.0",
-    "description": "package for creating workers templates",
+    "description": "Newsletter manager for vuenoob",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
