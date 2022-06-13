@@ -1,6 +1,6 @@
 import { Router } from 'itty-router'
 import Database from './db'
-import { rawJsonResponse, readRequestBody, checkIfSubscriptionExists, getSubscriberOfSite } from './utils'
+import { rawJsonResponse, readRequestBody, checkIfSubscriptionExists, getSubscriberOfSite, handlePreflightRequests } from './utils'
 
 // Create a new router
 const router = Router()
@@ -78,5 +78,20 @@ router.post("/unsubscribe", async request => {
 router.all("*", () => new Response("404, not found!", { status: 404 }))
 
 addEventListener('fetch', (e) => {
-  e.respondWith(router.handle(e.request))
+    const request = e.request;
+  const url = new URL(request.url);
+  if (request.method === 'OPTIONS') {
+    // Handle CORS preflight requests
+    e.respondWith(handlePreflightRequests(request));
+  } else if (request.method === 'POST') {
+    // Handle API requests
+    e.respondWith(router.handle(e.request))
+  } else {
+    e.respondWith(
+      new Response(null, {
+        status: 405,
+        statusText: 'Method Not Allowed',
+      })
+    );
+  }
 })
