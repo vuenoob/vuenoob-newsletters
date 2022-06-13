@@ -102,6 +102,27 @@ export default class Database {
 		}
 	}
 
+	async findAll(index, query){
+		try {
+	    const response = await this.client.query(
+	      Select(["data"],
+	        Map(
+	          Paginate(Match(Index(index), query)),
+	          Lambda("docRef", 
+	            Let({ item: Get(Var("docRef")) }, {
+	              refId: Select(['ref', 'id'], Var('item')),
+	              data: Select(['data'], Var('item'))
+	            })
+	          )
+	        )
+	      )
+	    )
+			return this.result("success", response)
+	  } catch (error) {
+			return this.result("error", this.faunaError(error))
+	  }
+	}
+
 	async delete(collection, refId){
 		try {
 			const response = await this.client.query(
