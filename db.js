@@ -1,5 +1,5 @@
 const faunadb = require("faunadb")
-const { Create, Collection, Match, Index, Get, Ref, Select, Let, Var, Update, Map, Paginate, Lambda} = faunadb.query;
+const { Create, Collection, Match, Index, Get, Ref, Select, Let, Var, Update, Map, Paginate, Lambda, Delete } = faunadb.query;
 
 export default class Database {
 
