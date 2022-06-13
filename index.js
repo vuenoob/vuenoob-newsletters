@@ -12,7 +12,8 @@ const db = new Database(FAUNA_SECRET);
 Our index route, a simple hello world.
 */
 router.get("/", () => {
-  return new Response("Hello, there! Welcome to vuenoob newsletters.")
+  return new Response("Vuenoob Newsletters.");
+})
 })
 
 /*
