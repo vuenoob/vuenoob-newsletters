@@ -70,6 +70,11 @@ router.post("/unsubscribe", async request => {
 
   return rawJsonResponse({status: "success", message: "Unsubscribed"});
 })
+
+/*
+  sends newsletters to subscribers
+*/
+router.post("/send-newsletters", async () => {
 })
 
 /*
