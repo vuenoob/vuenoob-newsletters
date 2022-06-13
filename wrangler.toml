@@ -7,5 +7,14 @@ route = ""
 zone_id = ""
 compatibility_date = "2022-06-10"
 
+[vars]
+# SITE
+# SUBSCRIPTIONS_COLLECTION
+# SITE_SUBSCRIBERS
+# SUBSCRIBER_BY_MAIL
+# SUBSCRIBERS_BY_MAIL
+# ALLOWED_DOMAINS
+# ALLOWED_METHODS
+
 # [secrets]
 # FAUNA_SECRET
