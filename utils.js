@@ -39,3 +39,13 @@ export function checkIfSubscriptionExists(subscribers, email, site){
 
   return subscribers.findIndex(subscriptionExists) !== -1;
 }
+
+export function getSubscriberOfSite(subscribers, site){
+  const siteSubscriber = ({data: subscriber}) => subscriber.site === site;
+
+  let index = subscribers.findIndex(siteSubscriber);
+
+  if(index === -1) return false;
+
+  return subscribers[index];
+}

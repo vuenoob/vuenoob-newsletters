@@ -1,6 +1,6 @@
 import { Router } from 'itty-router'
 import Database from './db'
-import { rawJsonResponse, readRequestBody, checkIfSubscriptionExists } from './utils'
+import { rawJsonResponse, readRequestBody, checkIfSubscriptionExists, getSubscriberOfSite } from './utils'
 
 // Create a new router
 const router = Router()
@@ -41,6 +41,34 @@ router.post("/subscribe", async request => {
   if(status !== "success") return rawJsonResponse({status, message: data.description});
 
   return rawJsonResponse({status, message: "Subscribed"});
+})
+
+/*
+  Unsubscribe email from newsletter
+*/
+router.post("/unsubscribe", async request => {
+  let { email } = await readRequestBody(request);
+
+  if(!email) return rawJsonResponse({status: 'error', message: 'Email is required'});
+
+  // taking into account that one email may be subscribed to more than one site
+  // get all subscribers with such email
+  let { status: subscribersStatus, data: subscribers } = await db.findAll(SUBSCRIBERS_BY_MAIL, email);
+
+  if(subscribersStatus !== "success") throw `Issue occured while executing db.findAll() Stack: ${JSON.stringify(subscribers)}`;
+
+  if(!subscribers.length) return rawJsonResponse({status: 'success', message: 'Unsubscribed'});
+
+  // get subscriber that is subscribed to the site
+  let {refId} = getSubscriberOfSite(subscribers, SITE);
+
+  if(!refId) return rawJsonResponse({status: 'success', message: 'Unsubscribed'});
+
+  let {status, data} = await db.delete(SUBSCRIPTIONS_COLLECTION, refId);
+
+  if(status !== "success") return rawJsonResponse({status: 'error', message: 'Failed to unsubscribe'});
+
+  return rawJsonResponse({status: "success", message: "Unsubscribed"});
 })
 })
 
