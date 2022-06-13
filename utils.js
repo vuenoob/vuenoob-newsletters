@@ -6,6 +6,7 @@ export function rawJsonResponse(data) {
   const init = {
     headers: {
       'content-type': 'application/json',
+      'Access-Control-Allow-Origin': ALLOWED_DOMAINS
     },
   };
   return new Response(JSON.stringify(data, null, 2), init);
@@ -34,20 +35,55 @@ export async function readRequestBody(request) {
   }
 }
 
-/** ranks items per the queries provided
- * @param {Array} items
- * @param {Array} queries
- * @returns {Array}
- */
-export function rankItemsByQueries(items, queries) {
-  let rank = [];
-  items.map(item => item.data).forEach(item => {
-    let score = 0;
-    queries.forEach(query => {
-      score += item.title.toLowerCase().includes(query) ? (query.includes('javascript') ? 0.5 : 1) : 0;
-    })
-    rank.push({score, item})
-  })
-  let ranked = rank.sort((a, b) => b.score - a.score)
-  return ranked.map(item => item.item)
+export function checkIfSubscriptionExists(subscribers, email, site){
+  const subscriptionExists = ({data: subscriber}) => subscriber.site === site && subscriber.email === email;
+
+  return subscribers.findIndex(subscriptionExists) !== -1;
+}
+
+export function getSubscriberOfSite(subscribers, site){
+  const siteSubscriber = ({data: subscriber}) => subscriber.site === site;
+
+  let index = subscribers.findIndex(siteSubscriber);
+
+  if(index === -1) return false;
+
+  return subscribers[index];
+}
+
+// Response headers to to OPTIONS requests.
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET,HEAD,POST,OPTIONS',
+  'Access-Control-Max-Age': '86400',
+};
+
+export function handlePreflightRequests(request) {
+  // Make sure the necessary headers are present
+  // for this to be a valid pre-flight request
+  let headers = request.headers;
+  if (
+    headers.get('Origin') !== null &&
+    headers.get('Access-Control-Request-Method') !== null &&
+    headers.get('Access-Control-Request-Headers') !== null
+  ) {
+    // Handle CORS pre-flight request.
+    let respHeaders = {
+      ...corsHeaders,
+      // Allow all future content Request headers to go back to browser
+      'Access-Control-Allow-Headers': request.headers.get('Access-Control-Request-Headers'),
+    };
+
+    return new Response(null, {
+      headers: respHeaders,
+    });
+  } else {
+    // Handle standard OPTIONS request. 
+    // And allow other HTTP Methods
+    return new Response(null, {
+      headers: {
+        Allow: 'HEAD, POST, OPTIONS',
+      },
+    });
+  }
 }

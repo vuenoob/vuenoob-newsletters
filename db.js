@@ -1,5 +1,5 @@
 const faunadb = require("faunadb")
-const { Create, Collection, Match, Index, Get, Ref, Select, Let, Var, Update, Map, Paginate, Lambda} = faunadb.query;
+const { Create, Collection, Match, Index, Get, Ref, Select, Let, Var, Update, Map, Paginate, Lambda, Delete } = faunadb.query;
 
 export default class Database {
 
@@ -102,12 +102,12 @@ export default class Database {
 		}
 	}
 
-	async getAll(index){
+	async findAll(index, query){
 		try {
 	    const response = await this.client.query(
 	      Select(["data"],
 	        Map(
-	          Paginate(Match(Index('all_programs'))),
+	          Paginate(Match(Index(index), query)),
 	          Lambda("docRef", 
 	            Let({ item: Get(Var("docRef")) }, {
 	              refId: Select(['ref', 'id'], Var('item')),
@@ -118,33 +118,6 @@ export default class Database {
 	      )
 	    )
 			return this.result("success", response)
-	  } catch (error) {
-			return this.result("error", this.faunaError(error))
-	  }
-	}
-
-	async allProgramItems(name, linksForOutput = false){
-		const {status, data: program} = await this.find('program_by_name', name)
-		if(!program.hasOwnProperty('data')) return this.result("error", { description: 'Program not found', status: 404 })
-		let refIdInteger = parseInt(program.refId)
-		try {
-	    const response = await this.client.query(
-	      Select(["data"],
-	        Map(
-	          Paginate(Match(Index('items_by_program_ref_id'), refIdInteger)),
-	          Lambda("docRef", 
-	            Let({ item: Get(Var("docRef")) }, {
-	              refId: Select(['ref', 'id'], Var('item')),
-	              data: Select(['data'], Var('item'))
-	            })
-	          )
-	        )
-	      )
-	    )
-			return this.result("success", linksForOutput ? response.map(item => {
-				let programTrackingId = program.data.trackingId
-				return Object.assign(item, {data: {...item.data, programTrackingId}})
-			}) : response)
 	  } catch (error) {
 			return this.result("error", this.faunaError(error))
 	  }

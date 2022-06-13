@@ -1,3 +1,3 @@
-## Affiliate Manager
+# Vuenoob Newsletters
 
-This is the back-end for affiliate managing service (affman) built on Cloudflare Workers and Fauna as the Data API.
+This is the newsletter manager for vuenoob built on Cloudflare Workers and using Fauna as the Data API.

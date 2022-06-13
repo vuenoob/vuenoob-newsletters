@@ -1,8 +1,8 @@
 {
-    "name": "affman-backend",
+    "name": "vuenoob-newsletters",
     "private": true,
     "version": "1.0.0",
-    "description": "package for creating workers templates",
+    "description": "Newsletter manager for vuenoob",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,11 +12,11 @@
     "license": "ISC",
     "devDependencies": {
         "husky": "^8.0.1",
-        "prettier": "^1.17.0"
+        "prettier": "^1.19.1"
     },
     "dependencies": {
         "faunadb": "^4.5.4",
-        "itty-router": "^2.1.9",
+        "itty-router": "^2.6.1",
         "serverless-cloudflare-workers": "^1.2.0"
     },
     "husky": {
