@@ -33,3 +33,9 @@ export async function readRequestBody(request) {
     return null;
   }
 }
+
+export function checkIfSubscriptionExists(subscribers, email, site){
+  const subscriptionExists = ({data: subscriber}) => subscriber.site === site && subscriber.email === email;
+
+  return subscribers.findIndex(subscriptionExists) !== -1;
+}
